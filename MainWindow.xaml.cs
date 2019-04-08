@@ -30,7 +30,7 @@ namespace RCON
         void Start()
         {
             Server server = new Server();
-            server.initConnect();
+            server.initAsync();
         }
     }
 }

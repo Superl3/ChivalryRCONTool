@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace RCON
 {
@@ -14,7 +14,6 @@ namespace RCON
                 int chkLength = Packet.getLength(Buffer);
                 if (chkLength <= 0)
                 {
-                    Thread.Sleep(1000);
                     continue;
                 }
                 int singleLength = 2 + 4 + chkLength;
@@ -23,9 +22,8 @@ namespace RCON
                 {
                     Buffer.RemoveRange(0, singleLength);
                 }
-                ParameterizedThreadStart handle = new ParameterizedThreadStart(this.handlePacket);
-                Thread t1 = new Thread(handle);
-                t1.Start(new Packet(rawPkt, singleLength));
+                Task t = new Task(this.handlePacket, (object)new Packet(rawPkt, singleLength));
+                t.Start();
             }
         }
         void handlePacket(object param)
